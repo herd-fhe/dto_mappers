@@ -163,6 +163,23 @@ namespace herd::mapper
 		return execution_plan;
 	}
 
+	herd::proto::JobStatus to_proto(herd::common::JobStatus status)
+	{
+		using herd::common::JobStatus;
+		switch(status)
+		{
+			case JobStatus::WAITING_FOR_EXECUTION:
+				return herd::proto::WAITING_FOR_EXECUTION;
+			case JobStatus::PENDING:
+				return herd::proto::PENDING;
+			case JobStatus::COMPLETED:
+				return herd::proto::COMPLETED;
+			case JobStatus::FAILED:
+				return herd::proto::FAILED;
+			default:
+				throw MappingError("Proto schema, model mismatch");
+		}
+	}
 
 	proto::Operation to_proto(common::Operation operation)
 	{
