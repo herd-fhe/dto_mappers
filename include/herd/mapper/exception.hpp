@@ -1,5 +1,5 @@
-#ifndef HERD_herd_dto_mappers_EXCEPTION_HPP
-#define HERD_herd_dto_mappers_EXCEPTION_HPP
+#ifndef HERD_HERD_DTO_MAPPERS_EXCEPTION_HPP
+#define HERD_HERD_DTO_MAPPERS_EXCEPTION_HPP
 
 #include <stdexcept>
 
@@ -11,4 +11,4 @@ namespace herd::mapper
 	};
 }
 
-#endif //HERD_herd_dto_mappers_EXCEPTION_HPP
+#endif //HERD_HERD_DTO_MAPPERS_EXCEPTION_HPP

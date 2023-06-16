@@ -1,5 +1,5 @@
-#ifndef HERD_herd_dto_mappers_EXECUTOR_HPP
-#define HERD_herd_dto_mappers_EXECUTOR_HPP
+#ifndef HERD_HERD_DTO_MAPPERS_EXECUTOR_HPP
+#define HERD_HERD_DTO_MAPPERS_EXECUTOR_HPP
 
 #include "herd/common/model/job.hpp"
 #include "herd/common/model/executor/execution_plan.hpp"
@@ -12,6 +12,7 @@ namespace herd::mapper
 {
 	[[nodiscard]] common::JobStatus to_model(proto::JobStatus columns_proto);
 	[[nodiscard]] common::Operation to_model(proto::Operation columns_proto);
+	[[nodiscard]] common::node_t to_model(const proto::Node& node_proto);
 	[[nodiscard]] common::Circuit to_model(const proto::Circuit& columns_proto);
 	[[nodiscard]] common::stage_t to_model(const proto::Stage& columns_proto);
 	[[nodiscard]] common::ExecutionPlan to_model(const proto::ExecutionPlan& columns_proto);
@@ -24,4 +25,4 @@ namespace herd::mapper
 	[[nodiscard]] proto::ExecutionPlan to_proto(const common::ExecutionPlan& plan);
 }
 
-#endif //HERD_herd_dto_mappers_EXECUTOR_HPP
+#endif //HERD_HERD_DTO_MAPPERS_EXECUTOR_HPP

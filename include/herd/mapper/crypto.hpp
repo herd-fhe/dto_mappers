@@ -1,5 +1,5 @@
-#ifndef HERD_herd_dto_mappers_CRYPTO_HPP
-#define HERD_herd_dto_mappers_CRYPTO_HPP
+#ifndef HERD_HERD_DTO_MAPPERS_CRYPTO_HPP
+#define HERD_HERD_DTO_MAPPERS_CRYPTO_HPP
 
 #include "herd/common/model/schema_type.hpp"
 
@@ -13,4 +13,4 @@ namespace herd::mapper
 	[[nodiscard]] proto::SchemaType to_proto(common::SchemaType type);
 }
 
-#endif //HERD_herd_dto_mappers_CRYPTO_HPP
+#endif //HERD_HERD_DTO_MAPPERS_CRYPTO_HPP

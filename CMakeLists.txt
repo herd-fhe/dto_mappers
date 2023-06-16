@@ -61,11 +61,13 @@ target_sources(
         src/crypto.cpp
         src/executor.cpp
         src/storage.cpp
+        src/worker.cpp
 
         include/herd/mapper/exception.hpp
         include/herd/mapper/crypto.hpp
         include/herd/mapper/storage.hpp
         include/herd/mapper/executor.hpp
+        include/herd/mapper/worker.hpp
 )
 
 target_link_libraries(herd_dto_mappers PUBLIC herd_common herd_proto)

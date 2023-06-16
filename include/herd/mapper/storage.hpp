@@ -1,5 +1,5 @@
-#ifndef HERD_herd_dto_mappers_STORAGE_HPP
-#define HERD_herd_dto_mappers_STORAGE_HPP
+#ifndef HERD_HERD_DTO_MAPPERS_STORAGE_HPP
+#define HERD_HERD_DTO_MAPPERS_STORAGE_HPP
 
 #include "herd/common/model/column_meta.hpp"
 #include "herd/common/model/data_type.hpp"
@@ -16,4 +16,4 @@ namespace herd::mapper
 	[[nodiscard]] google::protobuf::RepeatedPtrField<proto::ColumnDescriptor> to_proto(const std::vector<common::ColumnMeta>& columns);
 }
 
-#endif //HERD_herd_dto_mappers_STORAGE_HPP
+#endif //HERD_HERD_DTO_MAPPERS_STORAGE_HPP
