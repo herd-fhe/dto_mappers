@@ -24,6 +24,17 @@ namespace herd::mapper
 		return data_frame_ptr;
 	}
 
+	common::InputDataFramePtr to_model(const proto::InputDataFramePtr& input_data_frame_ptr_proto)
+	{
+		common::InputDataFramePtr input_data_frame_ptr{};
+
+		input_data_frame_ptr.pointer = to_model(input_data_frame_ptr_proto.pointer());
+		input_data_frame_ptr.row_count = input_data_frame_ptr_proto.row_count();
+
+		return input_data_frame_ptr;
+	}
+
+
 	common::CryptoKeyPtr to_model(const proto::CryptoKeyPtr& crypto_key_ptr_proto)
 	{
 		common::CryptoKeyPtr crypto_key_ptr{};

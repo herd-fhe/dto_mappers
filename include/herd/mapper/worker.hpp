@@ -10,6 +10,7 @@
 namespace herd::mapper
 {
 	[[nodiscard]] common::DataFramePtr to_model(const proto::DataFramePtr& data_frame_ptr_proto);
+	[[nodiscard]] common::InputDataFramePtr to_model(const proto::InputDataFramePtr& input_data_frame_ptr_proto);
 	[[nodiscard]] common::CryptoKeyPtr to_model(const proto::CryptoKeyPtr& crypto_key_ptr_proto);
 
 	[[nodiscard]] proto::DataFramePtr to_proto(const common::DataFramePtr& data_frame_ptr);
