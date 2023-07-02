@@ -50,7 +50,7 @@ namespace herd::mapper
 		proto::DataFramePtr data_frame_ptr_proto{};
 
 		data_frame_ptr_proto.set_data_frame_uuid(data_frame_ptr.uuid.as_string());
-		data_frame_ptr_proto.set_partition(data_frame_ptr_proto.partition());
+		data_frame_ptr_proto.set_partition(data_frame_ptr.partition);
 
 		return data_frame_ptr_proto;
 	}
