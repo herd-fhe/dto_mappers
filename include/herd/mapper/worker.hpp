@@ -3,6 +3,7 @@
 
 #include "herd/common/model/worker/data_frame_ptr.hpp"
 #include "herd/common/model/worker/crypto_key_ptr.hpp"
+#include "herd/common/model/worker/task.hpp"
 
 #include "worker.pb.h"
 
@@ -15,6 +16,9 @@ namespace herd::mapper
 
 	[[nodiscard]] proto::DataFramePtr to_proto(const common::DataFramePtr& data_frame_ptr);
 	[[nodiscard]] proto::CryptoKeyPtr to_proto(const common::CryptoKeyPtr& crypto_key_ptr);
+	[[nodiscard]] proto::InputDataFramePtr to_proto(const common::InputDataFramePtr& input_data_frame_ptr);
+
+	[[nodiscard]] proto::MapTask to_proto(const common::MapTask& map_task);
 }
 
 #endif //HERD_HERD_DTO_MAPPERS_WORKER_HPP
