@@ -247,7 +247,7 @@ namespace herd::mapper
 		proto::Circuit circuit_proto{};
 
 		const auto input_proto = circuit_proto.mutable_input();
-		const auto output_proto = circuit_proto.mutable_input();
+		const auto output_proto = circuit_proto.mutable_output();
 		input_proto->Add(std::begin(circuit.input), std::end(circuit.input));
 		output_proto->Add(std::begin(circuit.output), std::end(circuit.output));
 
