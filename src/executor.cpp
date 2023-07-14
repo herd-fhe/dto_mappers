@@ -1,5 +1,6 @@
 #include "herd/mapper/executor.hpp"
 #include "herd/mapper/crypto.hpp"
+#include "herd/mapper/storage.hpp"
 #include "herd/mapper/exception.hpp"
 
 
@@ -80,8 +81,18 @@ namespace herd::mapper
 	{
 		common::Circuit circuit{};
 
-		circuit.input.insert(std::end(circuit.input), std::begin(circuit_proto.input()), std::end(circuit_proto.input()));
-		circuit.output.insert(std::end(circuit.output), std::begin(circuit_proto.output()), std::end(circuit_proto.output()));
+		circuit.input.reserve(static_cast<unsigned long>(circuit_proto.input().size()));
+		circuit.output.reserve(static_cast<unsigned long>(circuit_proto.output().size()));
+
+		for(int i = 0; i < circuit_proto.input().size(); ++i)
+		{
+			circuit.input.emplace_back(to_model(circuit_proto.input(i)));
+		}
+
+		for(int i = 0; i < circuit_proto.output().size(); ++i)
+		{
+			circuit.output.emplace_back(to_model(circuit_proto.output(i)));
+		}
 
 		auto& graph = circuit.circuit_graph;
 
@@ -246,10 +257,15 @@ namespace herd::mapper
 	{
 		proto::Circuit circuit_proto{};
 
-		const auto input_proto = circuit_proto.mutable_input();
-		const auto output_proto = circuit_proto.mutable_output();
-		input_proto->Add(std::begin(circuit.input), std::end(circuit.input));
-		output_proto->Add(std::begin(circuit.output), std::end(circuit.output));
+		for(const auto& data_type: circuit.input)
+		{
+			circuit_proto.add_input(to_proto(data_type));
+		}
+
+		for(const auto& data_type: circuit.output)
+		{
+			circuit_proto.add_output(to_proto(data_type));
+		}
 
 		const auto operations_proto = circuit_proto.mutable_nodes();
 		for(const auto& operation: circuit.circuit_graph)
