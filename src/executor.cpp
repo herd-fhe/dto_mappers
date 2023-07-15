@@ -91,7 +91,8 @@ namespace herd::mapper
 
 		for(int i = 0; i < circuit_proto.output().size(); ++i)
 		{
-			circuit.output.emplace_back(to_model(circuit_proto.output(i)));
+			const auto& field_proto = circuit_proto.output(i);
+			circuit.output.emplace_back(field_proto.name(), to_model(field_proto.data_type()));
 		}
 
 		auto& graph = circuit.circuit_graph;
@@ -253,6 +254,16 @@ namespace herd::mapper
 		return node_proto;
 	}
 
+	proto::OutputColumn to_proto(const common::Circuit::OutputColumn& column)
+	{
+		proto::OutputColumn column_proto{};
+
+		column_proto.set_name(column.name);
+		column_proto.set_data_type(to_proto(column.data_type));
+
+		return column_proto;
+	}
+
 	proto::Circuit to_proto(const common::Circuit& circuit)
 	{
 		proto::Circuit circuit_proto{};
@@ -262,9 +273,9 @@ namespace herd::mapper
 			circuit_proto.add_input(to_proto(data_type));
 		}
 
-		for(const auto& data_type: circuit.output)
+		for(const auto& output_column: circuit.output)
 		{
-			circuit_proto.add_output(to_proto(data_type));
+			circuit_proto.mutable_output()->Add(to_proto(output_column));
 		}
 
 		const auto operations_proto = circuit_proto.mutable_nodes();

@@ -20,6 +20,7 @@ namespace herd::mapper
 	[[nodiscard]] herd::proto::JobStatus to_proto(herd::common::JobStatus status);
 	[[nodiscard]] proto::Operation to_proto(common::Operation operation);
 	[[nodiscard]] proto::Node to_proto(const common::node_t& node);
+	[[nodiscard]] proto::OutputColumn to_proto(const common::Circuit::OutputColumn& column);
 	[[nodiscard]] proto::Circuit to_proto(const common::Circuit& circuit);
 	[[nodiscard]] proto::Stage to_proto(const common::stage_t& stage);
 	[[nodiscard]] proto::ExecutionPlan to_proto(const common::ExecutionPlan& plan);
