@@ -46,6 +46,7 @@ namespace herd::mapper
 			const auto& input_node_proto = node_proto.input();
 			return common::InputNode{
 					input_node_proto.tuple_index(),
+					input_node_proto.field_index(),
 					input_node_proto.bit_index()
 			};
 		}
@@ -53,7 +54,7 @@ namespace herd::mapper
 		{
 			const auto& output_node_proto = node_proto.output();
 			return common::OutputNode{
-					output_node_proto.tuple_index(),
+					output_node_proto.field_index(),
 					output_node_proto.bit_index()
 			};
 		}
@@ -81,12 +82,16 @@ namespace herd::mapper
 	{
 		common::Circuit circuit{};
 
-		circuit.input.reserve(static_cast<unsigned long>(circuit_proto.input().size()));
-		circuit.output.reserve(static_cast<unsigned long>(circuit_proto.output().size()));
+		circuit.inputs.resize(static_cast<std::size_t>(circuit_proto.inputs().size()));
+		circuit.output.reserve(static_cast<std::size_t>(circuit_proto.output().size()));
 
-		for(int i = 0; i < circuit_proto.input().size(); ++i)
+		for(int i = 0; i < circuit_proto.inputs().size(); ++i)
 		{
-			circuit.input.emplace_back(to_model(circuit_proto.input(i)));
+			circuit.inputs[static_cast<std::size_t>(i)].reserve(static_cast<std::size_t>(circuit_proto.inputs(i).fields().size()));
+			for(int j = 0; j < circuit_proto.inputs(i).fields().size(); ++j)
+			{
+				circuit.inputs[static_cast<std::size_t>(i)].emplace_back(to_model(circuit_proto.inputs(i).fields(j)));
+			}
 		}
 
 		for(int i = 0; i < circuit_proto.output().size(); ++i)
@@ -113,6 +118,19 @@ namespace herd::mapper
 		}
 
 		return circuit;
+	}
+
+	common::Policy to_model(proto::Policy policy_proto)
+	{
+		switch(policy_proto)
+		{
+			case proto::SEQUENCED:
+				return common::Policy::SEQUENCED;
+			case proto::PARALLEL:
+				return common::Policy::PARALLEL;
+			default:
+				throw MappingError("Proto schema, model mismatch");
+		}
 	}
 
 	common::stage_t to_model(const proto::Stage& stage_proto)
@@ -144,6 +162,15 @@ namespace herd::mapper
 			common::MapperStage mapper_stage;
 			mapper_stage.circuit = to_model(mapper_stage_proto.circuit());
 			return mapper_stage;
+		}
+		else if(stage_proto.has_reduce())
+		{
+			const auto& reduce_stage_proto = stage_proto.reduce();
+
+			common::ReduceStage reduce_stage;
+			reduce_stage.circuit = to_model(reduce_stage_proto.circuit());
+			reduce_stage.policy = to_model(reduce_stage_proto.policy());
+			return reduce_stage;
 		}
 
 		throw MappingError("Proto schema, model mismatch");
@@ -222,8 +249,9 @@ namespace herd::mapper
 			auto input_proto = node_proto.mutable_input();
 			const auto& input = std::get<common::InputNode>(node);
 
-			input_proto->set_bit_index(input.bit_index);
 			input_proto->set_tuple_index(input.tuple_index);
+			input_proto->set_tuple_index(input.field_index);
+			input_proto->set_bit_index(input.bit_index);
 		}
 		else if(std::holds_alternative<common::OutputNode>(node))
 		{
@@ -231,7 +259,7 @@ namespace herd::mapper
 			const auto& output = std::get<common::OutputNode>(node);
 
 			output_proto->set_bit_index(output.bit_index);
-			output_proto->set_tuple_index(output.tuple_index);
+			output_proto->set_field_index(output.field_index);
 		}
 		else if(std::holds_alternative<common::ConstantNode>(node))
 		{
@@ -268,9 +296,13 @@ namespace herd::mapper
 	{
 		proto::Circuit circuit_proto{};
 
-		for(const auto& data_type: circuit.input)
+		for(const auto& input_struct: circuit.inputs)
 		{
-			circuit_proto.add_input(to_proto(data_type));
+			auto input_struct_proto = circuit_proto.add_inputs();
+			for(const auto data_type: input_struct)
+			{
+				input_struct_proto->add_fields(to_proto(data_type));
+			}
 		}
 
 		for(const auto& output_column: circuit.output)
@@ -293,6 +325,20 @@ namespace herd::mapper
 		}
 
 		return circuit_proto;
+	}
+
+	proto::Policy to_proto(const common::Policy& policy)
+	{
+		switch(policy)
+		{
+			using enum common::Policy;
+			case SEQUENCED:
+				return proto::SEQUENCED;
+			case PARALLEL:
+				return proto::PARALLEL;
+			default:
+				throw MappingError("Proto schema, model mismatch");
+		}
 	}
 
 	proto::Stage to_proto(const common::stage_t& stage)
@@ -318,6 +364,16 @@ namespace herd::mapper
 			const auto circuit_proto = stage_proto.mutable_mapper()->mutable_circuit();
 			circuit_proto->CopyFrom(to_proto(mapper_stage.circuit));
 		}
+		else if(std::holds_alternative<common::ReduceStage>(stage))
+		{
+			const auto& reduce_stage = std::get<common::ReduceStage>(stage);
+			const auto reduce = stage_proto.mutable_reduce();
+
+			const auto circuit_proto = reduce->mutable_circuit();
+			circuit_proto->CopyFrom(to_proto(reduce_stage.circuit));
+
+			reduce->set_policy(to_proto(reduce_stage.policy));
+		}
 		else
 		{
 			throw MappingError("Proto schema, model mismatch");
@@ -336,7 +392,7 @@ namespace herd::mapper
 
 		for(const auto& stage: plan.execution_graph)
 		{
-			const auto& stage_details = stage.value();;
+			const auto& stage_details = stage.value();
 			stages_proto->Add(to_proto(stage_details));
 		}
 
