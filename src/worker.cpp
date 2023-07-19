@@ -98,4 +98,28 @@ namespace herd::mapper
 		return map_task_proto;
 	}
 
+	proto::ReduceTask to_proto(const common::ReduceTask& reduce_task)
+	{
+		proto::ReduceTask reduce_task_proto{};
+
+		reduce_task_proto.set_session_uuid(reduce_task.session_uuid.as_string());
+
+		auto input_data_frames = reduce_task_proto.mutable_input_data_frame_ptrs();
+		for(const auto& input_ptr: reduce_task.input_data_frame_ptrs)
+		{
+			input_data_frames->Add(to_proto(input_ptr));
+		}
+
+		auto output_data_frame = reduce_task_proto.mutable_output_data_frame_ptr();
+		output_data_frame->CopyFrom(to_proto(reduce_task.output_data_frame_ptr));
+
+		auto crypto_key_ptr = reduce_task_proto.mutable_crypto_key_ptr();
+		crypto_key_ptr->CopyFrom(to_proto(reduce_task.crypto_key_ptr));
+
+		auto circuit = reduce_task_proto.mutable_circuit();
+		circuit->CopyFrom(to_proto(reduce_task.circuit));
+
+		return reduce_task_proto;
+	}
+
 }

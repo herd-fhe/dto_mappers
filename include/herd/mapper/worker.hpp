@@ -19,6 +19,7 @@ namespace herd::mapper
 	[[nodiscard]] proto::InputDataFramePtr to_proto(const common::InputDataFramePtr& input_data_frame_ptr);
 
 	[[nodiscard]] proto::MapTask to_proto(const common::MapTask& map_task);
+	[[nodiscard]] proto::ReduceTask to_proto(const common::ReduceTask& reduce_task);
 }
 
 #endif //HERD_HERD_DTO_MAPPERS_WORKER_HPP
