@@ -250,7 +250,7 @@ namespace herd::mapper
 			const auto& input = std::get<common::InputNode>(node);
 
 			input_proto->set_tuple_index(input.tuple_index);
-			input_proto->set_tuple_index(input.field_index);
+			input_proto->set_field_index(input.field_index);
 			input_proto->set_bit_index(input.bit_index);
 		}
 		else if(std::holds_alternative<common::OutputNode>(node))
