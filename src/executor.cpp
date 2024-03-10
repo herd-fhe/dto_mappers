@@ -128,6 +128,8 @@ namespace herd::mapper
 				return common::Policy::SEQUENCED;
 			case proto::PARALLEL:
 				return common::Policy::PARALLEL;
+			case proto::PARALLEL_FULL:
+				return common::Policy::PARALLEL_FULL;
 			default:
 				throw MappingError("Proto schema, model mismatch");
 		}
@@ -170,6 +172,12 @@ namespace herd::mapper
 			common::ReduceStage reduce_stage;
 			reduce_stage.circuit = to_model(reduce_stage_proto.circuit());
 			reduce_stage.policy = to_model(reduce_stage_proto.policy());
+
+			if(reduce_stage_proto.has_parallel_tree_level_limit())
+			{
+				reduce_stage.parallel_tree_level_limit = reduce_stage_proto.parallel_tree_level_limit();
+			}
+
 			return reduce_stage;
 		}
 
@@ -336,6 +344,8 @@ namespace herd::mapper
 				return proto::SEQUENCED;
 			case PARALLEL:
 				return proto::PARALLEL;
+			case PARALLEL_FULL:
+				return proto::PARALLEL_FULL;
 			default:
 				throw MappingError("Proto schema, model mismatch");
 		}
@@ -373,6 +383,11 @@ namespace herd::mapper
 			circuit_proto->CopyFrom(to_proto(reduce_stage.circuit));
 
 			reduce->set_policy(to_proto(reduce_stage.policy));
+
+			if(reduce_stage.parallel_tree_level_limit.has_value())
+			{
+				reduce->set_parallel_tree_level_limit(reduce_stage.parallel_tree_level_limit.value());
+			}
 		}
 		else
 		{
