@@ -173,9 +173,9 @@ namespace herd::mapper
 			reduce_stage.circuit = to_model(reduce_stage_proto.circuit());
 			reduce_stage.policy = to_model(reduce_stage_proto.policy());
 
-			if(reduce_stage_proto.has_parallel_tree_level_limit())
+			if(reduce_stage_proto.has_per_node_count())
 			{
-				reduce_stage.parallel_tree_level_limit = reduce_stage_proto.parallel_tree_level_limit();
+				reduce_stage.per_node_count = reduce_stage_proto.per_node_count();
 			}
 
 			return reduce_stage;
@@ -384,9 +384,9 @@ namespace herd::mapper
 
 			reduce->set_policy(to_proto(reduce_stage.policy));
 
-			if(reduce_stage.parallel_tree_level_limit.has_value())
+			if(reduce_stage.per_node_count.has_value())
 			{
-				reduce->set_parallel_tree_level_limit(reduce_stage.parallel_tree_level_limit.value());
+				reduce->set_per_node_count(reduce_stage.per_node_count.value());
 			}
 		}
 		else
